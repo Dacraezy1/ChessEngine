@@ -15,16 +15,20 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-          cache: 'gradle'
+
+      - name: Download Fresh Gradle Wrapper
+        # This fixes the "corrupt jarfile" error by getting a new one
+        run: |
+          wget https://services.gradle.org/distributions/gradle-8.2-bin.zip
+          unzip gradle-8.2-bin.zip
+          cp gradle-8.2/lib/plugins/gradle-wrapper-8.2.jar gradle/wrapper/gradle-wrapper.jar
 
       - name: Fix Permissions
-        # This fixes the 'Permission denied' for the jar file
         run: |
           chmod +x gradlew
           chmod -R +x gradle/wrapper/
 
       - name: Build Debug APK
-        # Use :app:assembleDebug to target your specific module
         run: ./gradlew :app:assembleDebug --info --stacktrace --no-daemon
 
       - name: Upload APK
