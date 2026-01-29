@@ -1,2 +1,4 @@
 #!/bin/sh
-exec "$(dirname "$0")/gradle/wrapper/gradle-wrapper.jar" "$@"
+
+# Standard Gradle wrapper script
+exec java -jar "$(dirname "$0")/gradle/wrapper/gradle-wrapper.jar" "$@"
