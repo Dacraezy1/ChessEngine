@@ -40,7 +40,6 @@ android {
     }
     externalNativeBuild {
         cmake {
-            // REMOVED 'file()' wrapper - standard path works best here
             path "src/main/cpp/CMakeLists.txt"
             version '3.22.1'
         }
