@@ -15,21 +15,20 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
+          cache: 'gradle'
 
-      - name: Check Folder Structure
-        # This will print the whole folder tree in the logs
-        run: find . -maxdepth 3 -not -path '*/.*'
-
-      - name: Grant permissions
+      - name: Grant Execute Permissions
         run: chmod +x gradlew
 
       - name: Build Debug APK
-        # If this finishes in 0s, look at the "Check Folder Structure" log
-        run: ./gradlew assemble --info --no-daemon
+        # Force build of the :app module specifically
+        run: ./gradlew :app:assembleDebug --no-daemon --info
 
-      - name: Find and Upload APK
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: ChessEngine-App
-          path: "**/*.apk" # Extreme wildcard to find it anywhere
+          name: ChessEngine-Debug-APK
+          # This wildcard finds any .apk file created in the build process
+          path: "**/*.apk"
+          if-no-files-found: error
           
