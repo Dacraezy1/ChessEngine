@@ -17,20 +17,23 @@ jobs:
           java-version: '17'
           cache: 'gradle'
 
-      - name: Grant Full Permissions
-        # This -R command unlocks the script AND the internal .jar file
+      - name: Folder Audit (Debug)
+        # This shows us exactly where your files are
+        run: ls -R
+
+      - name: Grant Permissions
         run: |
           chmod +x gradlew
           chmod -R +x gradle/wrapper/
 
       - name: Build Debug APK
-        # We use :app:assembleDebug to target your app folder
-        run: ./gradlew :app:assembleDebug --no-daemon --info
+        # We use 'assemble' instead of ':app:assembleDebug' to see if it finds ANY module
+        run: ./gradlew assembleDebug --stacktrace --info --no-daemon
 
-      - name: Upload APK
+      - name: Find and Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: ChessEngine-APK
+          name: ChessEngine-App
           path: "**/*.apk"
           if-no-files-found: error
           
