@@ -1,6 +1,10 @@
 name: Build Android APK
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
 
 jobs:
   build:
@@ -20,20 +24,26 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Grant Full Permissions
-        # This fixes the 'Permission Denied' for the script AND the internal jar
+      - name: Grant Execute Permissions
+        # This fixes the 'Permission Denied' for the script and the internal wrapper
         run: |
           chmod +x gradlew
-          chmod -R +x gradle/wrapper/
+          chmod +x gradle/wrapper/gradle-wrapper.jar || true
 
       - name: Build Debug APK
-        run: ./gradlew assembleDebug --no-daemon
+        # We use ':app:assembleDebug' to force Gradle to build your 'app' folder
+        # We use '--stacktrace' so we can see the exact error if the C++ fails
+        run: ./gradlew :app:assembleDebug --stacktrace --no-daemon
 
-      - name: Upload APK Artifact
+      - name: Verify APK Generation
+        # This will print the location of the APK in the logs so we can see it
+        run: find . -name "*.apk"
+
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: ChessEngine-APK
-          # The '**' is a wildcard that finds the APK wherever Gradle puts it
-          path: "**/build/outputs/apk/**/*.apk"
+          name: ChessEngine-Build
+          # Using a search pattern ensures it finds the APK regardless of module name
+          path: "**/build/outputs/apk/debug/*.apk"
           if-no-files-found: error
           
