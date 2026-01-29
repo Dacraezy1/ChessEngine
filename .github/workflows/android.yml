@@ -33,7 +33,10 @@ jobs:
       - name: Build Debug APK
         # We use --no-daemon to save memory on the GitHub runner
         run: ./gradlew assembleDebug --no-daemon
-
+    
+      - name: List files to find APK
+        run: find . -name "*.apk"
+        
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
