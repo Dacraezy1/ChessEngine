@@ -1,10 +1,6 @@
 name: Build Android APK
 
-on:
-  push:
-    branches: [ "main" ] # Or "master" if that's your branch name
-  pull_request:
-    branches: [ "main" ]
+on: [push, pull_request]
 
 jobs:
   build:
@@ -24,22 +20,20 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Fix Wrapper Permissions
-        # This gives 'Execute' rights to both the script and the JAR
+      - name: Grant Full Permissions
+        # This fixes the 'Permission Denied' for the script AND the internal jar
         run: |
           chmod +x gradlew
-          chmod +x gradle/wrapper/gradle-wrapper.jar
+          chmod -R +x gradle/wrapper/
 
       - name: Build Debug APK
-        # We use --no-daemon to save memory on the GitHub runner
         run: ./gradlew assembleDebug --no-daemon
-    
-      - name: List files to find APK
-        run: find . -name "*.apk"
-        
+
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: human-chess-engine-apk
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: ChessEngine-APK
+          # The '**' is a wildcard that finds the APK wherever Gradle puts it
+          path: "**/build/outputs/apk/**/*.apk"
+          if-no-files-found: error
           
