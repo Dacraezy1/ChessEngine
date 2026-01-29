@@ -17,27 +17,19 @@ jobs:
           java-version: '17'
           cache: 'gradle'
 
-      - name: Grant Permissions
+      - name: Fix Permissions
+        # This fixes the 'Permission denied' for the jar file
         run: |
           chmod +x gradlew
           chmod -R +x gradle/wrapper/
 
-      - name: Debug Project Structure
-        # This will print every file in your repo so we can see the exact paths
-        run: find . -maxdepth 3 -not -path '*/.*'
-
-      - name: List Gradle Projects
-        # This tells us if Gradle actually 'sees' the :app module
-        run: ./gradlew projects
-
       - name: Build Debug APK
-        # We use 'assemble' to build everything it finds
-        run: ./gradlew assembleDebug --info --no-daemon
+        # Use :app:assembleDebug to target your specific module
+        run: ./gradlew :app:assembleDebug --info --stacktrace --no-daemon
 
-      - name: Find and Upload APK
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: ChessEngine-App
-          path: "**/*.apk"
+          name: ChessEngine-App-APK
+          path: "**/build/outputs/apk/debug/*.apk"
           if-no-files-found: error
-          
