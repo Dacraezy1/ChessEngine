@@ -16,12 +16,14 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Download Fresh Gradle Wrapper
-        # This fixes the "corrupt jarfile" error by getting a new one
+      - name: Repair and Download Wrapper
+        # This step bypasses the broken JAR in the repo and downloads a fresh one
         run: |
+          mkdir -p gradle/wrapper
           wget https://services.gradle.org/distributions/gradle-8.2-bin.zip
-          unzip gradle-8.2-bin.zip
+          unzip -o gradle-8.2-bin.zip
           cp gradle-8.2/lib/plugins/gradle-wrapper-8.2.jar gradle/wrapper/gradle-wrapper.jar
+          rm -rf gradle-8.2 gradle-8.2-bin.zip
 
       - name: Fix Permissions
         run: |
@@ -29,6 +31,7 @@ jobs:
           chmod -R +x gradle/wrapper/
 
       - name: Build Debug APK
+        # We use --info to monitor the C++ compilation progress
         run: ./gradlew :app:assembleDebug --info --stacktrace --no-daemon
 
       - name: Upload APK
