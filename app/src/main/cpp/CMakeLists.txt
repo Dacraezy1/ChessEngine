@@ -1,8 +1,8 @@
-cmake_minimum_required(VERSION 3.18.1)
-project(humanchess)
+cmake_minimum_required(VERSION 3.22.1)
+project("chessengine")
 
 add_library(
-    humanchess
+    chessengine
     SHARED
     chess-engine.cpp
     native-lib.cpp
@@ -10,4 +10,7 @@ add_library(
 
 find_library(log-lib log)
 
-target_link_libraries(humanchess ${log-lib})
+target_link_libraries(
+    chessengine
+    ${log-lib}
+)
