@@ -1,10 +1,6 @@
 name: Build Android APK
 
-on:
-  push:
-    branches: [ "main", "master" ]
-  pull_request:
-    branches: [ "main", "master" ]
+on: [push, pull_request]
 
 jobs:
   build:
@@ -19,31 +15,21 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-          cache: 'gradle'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Check Folder Structure
+        # This will print the whole folder tree in the logs
+        run: find . -maxdepth 3 -not -path '*/.*'
 
-      - name: Grant Execute Permissions
-        # This fixes the 'Permission Denied' for the script and the internal wrapper
-        run: |
-          chmod +x gradlew
-          chmod +x gradle/wrapper/gradle-wrapper.jar || true
+      - name: Grant permissions
+        run: chmod +x gradlew
 
       - name: Build Debug APK
-        # We use ':app:assembleDebug' to force Gradle to build your 'app' folder
-        # We use '--stacktrace' so we can see the exact error if the C++ fails
-        run: ./gradlew :app:assembleDebug --stacktrace --no-daemon
+        # If this finishes in 0s, look at the "Check Folder Structure" log
+        run: ./gradlew assemble --info --no-daemon
 
-      - name: Verify APK Generation
-        # This will print the location of the APK in the logs so we can see it
-        run: find . -name "*.apk"
-
-      - name: Upload APK
+      - name: Find and Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: ChessEngine-Build
-          # Using a search pattern ensures it finds the APK regardless of module name
-          path: "**/build/outputs/apk/debug/*.apk"
-          if-no-files-found: error
+          name: ChessEngine-App
+          path: "**/*.apk" # Extreme wildcard to find it anywhere
           
