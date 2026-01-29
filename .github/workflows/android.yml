@@ -1,3 +1,15 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ "main" ] # Or "master" if that's your branch name
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -7,16 +19,22 @@
         with:
           distribution: 'temurin'
           java-version: '17'
+          cache: 'gradle'
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Build with System Gradle
-        # We use 'gradle' (system-wide) instead of './gradlew' (local file)
-        # This completely skips the "Permission Denied" wrapper error.
-        run: gradle assembleDebug
+      - name: Fix Wrapper Permissions
+        # This gives 'Execute' rights to both the script and the JAR
+        run: |
+          chmod +x gradlew
+          chmod +x gradle/wrapper/gradle-wrapper.jar
 
-      - name: Upload APK
+      - name: Build Debug APK
+        # We use --no-daemon to save memory on the GitHub runner
+        run: ./gradlew assembleDebug --no-daemon
+
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: human-chess-engine-apk
