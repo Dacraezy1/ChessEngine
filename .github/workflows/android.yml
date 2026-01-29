@@ -17,18 +17,22 @@ jobs:
           java-version: '17'
           cache: 'gradle'
 
-      - name: Folder Audit (Debug)
-        # This shows us exactly where your files are
-        run: ls -R
-
       - name: Grant Permissions
         run: |
           chmod +x gradlew
           chmod -R +x gradle/wrapper/
 
+      - name: Debug Project Structure
+        # This will print every file in your repo so we can see the exact paths
+        run: find . -maxdepth 3 -not -path '*/.*'
+
+      - name: List Gradle Projects
+        # This tells us if Gradle actually 'sees' the :app module
+        run: ./gradlew projects
+
       - name: Build Debug APK
-        # We use 'assemble' instead of ':app:assembleDebug' to see if it finds ANY module
-        run: ./gradlew assembleDebug --stacktrace --info --no-daemon
+        # We use 'assemble' to build everything it finds
+        run: ./gradlew assembleDebug --info --no-daemon
 
       - name: Find and Upload APK
         uses: actions/upload-artifact@v4
