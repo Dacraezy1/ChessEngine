@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <com.example.chessengine.ChessBoardView
+        android:id="@+id/chess_board_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintDimensionRatio="1:1" />
+
+    <Button
+        android:id="@+id/flip_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Flip Board"
+        android:layout_margin="8dp"
+        app:layout_constraintTop_toBottomOf="@id/chess_board_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/best_move_toggle" />
+
+    <ToggleButton
+        android:id="@+id/best_move_toggle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textOn="Hide Best Move"
+        android:textOff="Show Best Move"
+        android:checked="true"
+        android:layout_margin="8dp"
+        app:layout_constraintTop_toBottomOf="@id/chess_board_view"
+        app:layout_constraintStart_toEndOf="@id/flip_button"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/elo_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Engine Strength:"
+        android:layout_marginStart="16dp"
+        app:layout_constraintTop_toBottomOf="@id/flip_button"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <SeekBar
+        android:id="@+id/elo_seekbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:max="2200"
+        android:progress="700"
+        app:layout_constraintTop_toBottomOf="@id/elo_label"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/elo_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1500 ELO"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintTop_toTopOf="@id/elo_label"
+        app:layout_constraintBottom_toBottomOf="@id/elo_label"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/status_text"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="16dp"
+        android:background="#EEEEEE"
+        android:padding="8dp"
+        android:scrollbars="vertical"
+        android:text="Engine Status:\nReady"
+        app:layout_constraintTop_toBottomOf="@id/elo_seekbar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
